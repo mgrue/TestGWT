@@ -1,6 +1,8 @@
 .gradle
 .DS_Store
+.idea
 build
 gwt-unitCache
 war/TestGWT
 war/WEB-INF/deploy
+/.idea/
