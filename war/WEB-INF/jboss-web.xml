@@ -1,0 +1,3 @@
+<jboss-web>
+    <context-root>TestGWT</context-root>
+</jboss-web>

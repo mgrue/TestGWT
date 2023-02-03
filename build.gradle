@@ -1,0 +1,81 @@
+apply plugin: 'war'
+apply plugin: 'eclipse'
+
+group = 'testgwt'
+version = '1.0'
+
+description = """GWT TEST"""
+
+def gwtVersion = '2.10.0'
+println gwtVersion
+
+sourceCompatibility = 11
+targetCompatibility = 11
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+sourceSets {
+    main.java.srcDirs = ['src']
+    main.resources.srcDirs = ['src']
+}
+
+configurations {
+	compileGWT
+}
+
+task gwt(type: JavaExec) {
+   	group 'PB'
+    description 'compile gwt Javascript'
+   
+   	//doFirst {
+   	//	classpath.each { println it.name }
+   	//}
+   
+    main = 'com.google.gwt.dev.Compiler'
+    jvmArgs = ['-Xmx512M']
+    args = ['TestGWT', '-localWorkers', '4']
+    classpath = configurations.compileGWT +
+    fileTree('war/WEB-INF/lib') +
+    files('./src') +
+    files('../PBData/src') +
+    files('../PBAll/src') +
+    files('../PBGraphics/src') +
+    sourceSets.main.compileClasspath
+}
+
+war {
+	webAppDirName = 'war'
+	
+	classpath = classpath - sourceSets.main.output
+	from (jar) {
+		into 'WEB-INF/lib'
+	}
+	exclude 'WEB-INF/classes'
+	exclude 'WEB-INF/lib'
+   
+    
+    dependsOn gwt
+}
+repositories {    
+	jcenter()
+	mavenLocal()
+}
+dependencies {
+	//implementation group: group, name: 'PBControlInterface', version: '3.29.0' + '-' + versionType
+
+	// Wildfly 
+    //compileOnly group: 'log4j', name: 'log4j', version: log4jVersion
+
+	// Javax
+	compileOnly group: 'javax', name: 'javaee-api', version: '7.0'
+
+    // GWT
+	//compileGWT project(":goda-time")
+    implementation group: 'com.google.gwt', name: 'gwt-servlet', version: gwtVersion
+    compileGWT group: 'com.google.gwt', name: 'gwt-dev', version: gwtVersion
+	compileGWT group: 'com.google.gwt', name: 'gwt-user', version: gwtVersion
+    compileGWT group: 'com.google.web.bindery', name: 'requestfactory-server', version: gwtVersion
+   
+}

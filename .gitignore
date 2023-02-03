@@ -1,0 +1,6 @@
+.gradle
+.DS_Store
+build
+gwt-unitCache
+war/TestGWT
+war/WEB-INF/deploy
